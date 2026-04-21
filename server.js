@@ -17,13 +17,18 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'Loyha 22', 'landing.html'));
 });
 
-app.get('/navbat', (req, res) => {
+// Flexible routing for Navbat
+app.get(['/navbat', '/navbat.html', '/Navbat.html'], (req, res) => {
     res.sendFile(path.join(__dirname, 'Loyha 22', 'Navbat.html'));
 });
 
-app.get('/admin', (req, res) => {
+// Flexible routing for Admin
+app.get(['/admin', '/admin.html', '/Admin.html'], (req, res) => {
     res.sendFile(path.join(__dirname, 'Loyha 22', 'Admin.html'));
 });
+
+// Catch-all for other static files in Loyha 22
+app.use(express.static(path.join(__dirname, 'Loyha 22')));
 
 // Basic API check
 app.get('/api/health', (req, res) => {
