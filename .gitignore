@@ -3,3 +3,10 @@ node_modules/
 *.db
 *.db-journal
 .vscode/
+dist/
+__pycache__/
+*.py[codz]
+*.log
+venv/
+env/
+.venv/

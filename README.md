@@ -1,0 +1,2 @@
+# loyiha12
+ONLINE NAVBAT TIZIMI
