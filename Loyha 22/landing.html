@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Navbat.uz — O'zbekiston uchun onlayn navbat tizimi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --uz1:#1B4F8A;--uz2:#2E7D32;--gold:#E8B84B;
+  --dark:#070d1a;--card:#0e1829;--card2:#111f35;
+  --border:rgba(255,255,255,.07);--muted:#7a8ea8;--text:#e8edf5;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--text);overflow-x:hidden;}
+.bg-layer{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.bg-layer::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 20% 10%,rgba(27,79,138,.18) 0%,transparent 60%),
+  radial-gradient(ellipse 60% 40% at 80% 80%,rgba(46,125,50,.12) 0%,transparent 60%),
+  radial-gradient(ellipse 40% 30% at 50% 50%,rgba(232,184,75,.05) 0%,transparent 70%);}
+.grid-lines{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(27,79,138,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(27,79,138,.04) 1px,transparent 1px);
+  background-size:80px 80px;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;height:68px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(7,13,26,.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-box{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--uz1),var(--uz2));
+  display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#fff;}
+.logo-text{font-family:'Playfair Display',serif;font-size:19px;color:#fff;}
+.logo-text b{color:var(--gold);}
+.nav-links{display:flex;gap:26px;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:700;transition:.2s;}
+.nav-links a:hover{color:#fff;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-lang{display:flex;gap:4px;}
+.nav-lang button{padding:4px 9px;border:1.5px solid var(--border);border-radius:14px;
+  background:transparent;color:var(--muted);font-size:11px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:.2s;}
+.nav-lang button.act{background:rgba(232,184,75,.15);border-color:rgba(232,184,75,.4);color:var(--gold);}
+.nav-cta{background:linear-gradient(135deg,var(--uz1),var(--uz2));color:#fff;padding:9px 20px;
+  border-radius:10px;text-decoration:none;font-size:13px;font-weight:800;transition:.2s;white-space:nowrap;}
+.nav-cta:hover{opacity:.85;transform:translateY(-1px);}
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;padding:100px 5% 60px;}
+.hero-inner{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;
+  background:rgba(232,184,75,.08);border:1px solid rgba(232,184,75,.25);color:var(--gold);
+  padding:6px 14px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:22px;}
+.pulse{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pls 2s infinite;}
+@keyframes pls{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.6);}}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(32px,4vw,54px);line-height:1.1;margin-bottom:20px;}
+.hero h1 em{color:var(--gold);font-style:normal;}
+.hero-sub{font-size:15px;color:var(--muted);line-height:1.75;margin-bottom:34px;max-width:480px;}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:44px;}
+.btn-p{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--uz1),var(--uz2));
+  color:#fff;padding:13px 24px;border-radius:11px;text-decoration:none;font-size:14px;font-weight:800;transition:.2s;}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(27,79,138,.4);}
+.btn-s{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.04);
+  border:1.5px solid var(--border);color:var(--text);padding:13px 24px;border-radius:11px;
+  text-decoration:none;font-size:14px;font-weight:700;transition:.2s;}
+.btn-s:hover{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.07);}
+.hero-stats{display:flex;gap:30px;flex-wrap:wrap;}
+.hst{text-align:center;}
+.hst-n{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;
+  background:linear-gradient(135deg,var(--gold),#f0c060);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hst-l{font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
+.hero-right{position:relative;}
+.mockup{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;
+  box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.04);
+  transform:rotateY(-6deg) rotateX(2deg);transition:.5s ease;}
+.mockup:hover{transform:rotateY(-2deg) rotateX(1deg);}
+.mock-bar{background:rgba(255,255,255,.03);border-bottom:1px solid var(--border);
+  padding:11px 14px;display:flex;align-items:center;gap:8px;}
+.mock-dots{display:flex;gap:5px;}
+.mock-dots span{width:9px;height:9px;border-radius:50%;}
+.mock-url{flex:1;background:rgba(255,255,255,.05);border-radius:5px;padding:4px 11px;font-size:10px;color:var(--muted);}
+.mock-body{padding:16px;}
+.mock-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.mc{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:9px;padding:11px;text-align:center;}
+.mc-n{font-size:18px;font-weight:900;color:var(--gold);}
+.mc-l{font-size:8px;color:var(--muted);margin-top:2px;text-transform:uppercase;}
+.mock-rows{display:flex;flex-direction:column;gap:5px;}
+.mr{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.02);
+  border:1px solid var(--border);border-radius:8px;padding:8px 10px;}
+.mr-av{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;}
+.mr-name{flex:1;font-size:10px;font-weight:700;}
+.mr-time{font-size:9px;color:var(--muted);}
+.badge{font-size:8px;padding:2px 7px;border-radius:8px;font-weight:800;}
+.bw{background:rgba(232,184,75,.15);color:var(--gold);}
+.bk{background:rgba(46,125,50,.2);color:#4ade80;}
+.bd{background:rgba(27,79,138,.25);color:#60a5fa;}
+.fc{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;box-shadow:0 16px 40px rgba(0,0,0,.4);}
+.fc1{left:-28px;bottom:-14px;}
+.fc1-num{font-size:22px;font-weight:900;color:#4ade80;font-family:'Playfair Display',serif;}
+.fc1-lbl{font-size:10px;color:var(--muted);}
+.fc2{right:-18px;top:-12px;display:flex;align-items:center;gap:10px;}
+.fc2-ico{font-size:20px;}
+.fc2-title{font-size:11px;font-weight:800;}
+.fc2-sub{font-size:9px;color:var(--muted);}
+section{position:relative;z-index:1;padding:90px 5%;}
+.container{max-width:1200px;margin:0 auto;}
+.stag{display:inline-block;padding:5px 13px;border-radius:16px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;}
+.stag-b{background:rgba(27,79,138,.2);border:1px solid rgba(27,79,138,.35);color:#60a5fa;}
+.stag-r{background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.3);color:#f87171;}
+.stag-g{background:rgba(46,125,50,.2);border:1px solid rgba(46,125,50,.35);color:#4ade80;}
+.stag-y{background:rgba(232,184,75,.12);border:1px solid rgba(232,184,75,.3);color:var(--gold);}
+.sec-h{font-family:'Playfair Display',serif;font-size:clamp(26px,3.2vw,42px);line-height:1.2;margin-bottom:14px;}
+.sec-p{font-size:15px;color:var(--muted);line-height:1.75;max-width:520px;}
+/* MUAMMO RAQAMLAR */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:48px 0 56px;}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px 18px;text-align:center;position:relative;overflow:hidden;transition:.3s;}
+.stat-box:hover{border-color:rgba(248,113,113,.35);transform:translateY(-3px);}
+.stat-box::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(220,38,38,.06),transparent);}
+.stat-num{font-family:'Playfair Display',serif;font-size:38px;font-weight:900;color:#f87171;margin-bottom:8px;}
+.stat-lbl{font-size:12px;color:var(--muted);line-height:1.5;}
+/* TIMELINE */
+.timeline{margin-top:48px;position:relative;padding-left:0;}
+.tl-line{position:absolute;left:23px;top:24px;bottom:24px;width:2px;background:linear-gradient(to bottom,#ef4444,#f97316,var(--gold));opacity:.25;}
+.tl-item{display:flex;gap:24px;padding:18px 0;align-items:flex-start;}
+.tl-dot{width:46px;height:46px;border-radius:50%;flex-shrink:0;background:rgba(239,68,68,.1);
+  border:2px solid rgba(239,68,68,.3);display:flex;align-items:center;justify-content:center;font-size:18px;position:relative;z-index:1;}
+.tl-body{padding-top:6px;}
+.tl-title{font-size:15px;font-weight:800;margin-bottom:5px;color:#f87171;}
+.tl-desc{font-size:13px;color:var(--muted);line-height:1.7;}
+/* YECHIM */
+.sol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px;}
+.sol-card{background:var(--card);border:1px solid rgba(46,125,50,.15);border-radius:16px;padding:26px;transition:.3s;position:relative;overflow:hidden;}
+.sol-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(46,125,50,.06),transparent);}
+.sol-card:hover{border-color:rgba(46,125,50,.4);transform:translateY(-4px);}
+.sol-ico{font-size:30px;margin-bottom:12px;}
+.sol-title{font-size:14px;font-weight:800;color:#4ade80;margin-bottom:7px;}
+.sol-desc{font-size:12px;color:var(--muted);line-height:1.7;position:relative;}
+/* QANDAY ISHLAYDI - FLOW */
+.flow-row{display:flex;align-items:flex-start;justify-content:center;flex-wrap:wrap;gap:0;margin-top:48px;}
+.flow-step{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 18px;max-width:170px;}
+.flow-num{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--uz1),var(--uz2));
+  display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:12px;}
+.flow-icon{font-size:20px;margin-bottom:8px;}
+.flow-title{font-size:13px;font-weight:800;margin-bottom:4px;}
+.flow-desc{font-size:11px;color:var(--muted);line-height:1.6;}
+.flow-arrow{font-size:22px;color:rgba(232,184,75,.35);padding:0 4px;margin-top:-32px;flex-shrink:0;}
+/* ADV + VISUAL */
+.adv-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-top:52px;}
+.adv-list{display:flex;flex-direction:column;gap:14px;}
+.adv-item{display:flex;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px;transition:.3s;}
+.adv-item:hover{border-color:rgba(232,184,75,.2);transform:translateX(4px);}
+.adv-ico{width:42px;height:42px;border-radius:10px;flex-shrink:0;background:rgba(232,184,75,.1);
+  border:1px solid rgba(232,184,75,.2);display:flex;align-items:center;justify-content:center;font-size:19px;}
+.adv-title{font-size:13px;font-weight:800;margin-bottom:3px;}
+.adv-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+/* VISUAL PANEL */
+.visual-panel{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.4);}
+.vp-header{background:linear-gradient(135deg,var(--uz1),#1a5c2a);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;}
+.vp-title{font-size:13px;font-weight:800;color:#fff;}
+.vp-live{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:rgba(255,255,255,.8);}
+.vp-dot{width:6px;height:6px;background:#4ade80;border-radius:50%;animation:pls 1.5s infinite;}
+.vp-body{padding:16px;}
+.vp-ticket{background:linear-gradient(135deg,var(--uz1),var(--uz2));border-radius:13px;padding:18px;text-align:center;margin-bottom:12px;}
+.vp-num{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;color:#fff;}
+.vp-svc{font-size:11px;color:rgba(255,255,255,.7);margin-top:3px;}
+.vp-rows{display:flex;flex-direction:column;gap:7px;}
+.vpr{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.03);border-radius:8px;padding:9px 11px;font-size:11px;}
+.vpr-lbl{color:var(--muted);font-weight:600;}
+.vpr-val{font-weight:800;}
+.vp-wait{margin-top:11px;background:rgba(46,125,50,.1);border:1px solid rgba(46,125,50,.2);border-radius:9px;padding:11px;text-align:center;}
+.vp-wait-n{font-size:20px;font-weight:900;color:#4ade80;}
+.vp-wait-l{font-size:10px;color:var(--muted);margin-top:2px;}
+/* KIM UCHUN */
+.for-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px;}
+.for-card{border-radius:16px;padding:26px;transition:.3s;border:1px solid var(--border);background:var(--card);}
+.for-card:hover{transform:translateY(-4px);}
+.for-bank{border-top:3px solid var(--uz1);}
+.for-clinic{border-top:3px solid var(--uz2);}
+.for-gov{border-top:3px solid var(--gold);}
+.for-ico{font-size:38px;margin-bottom:12px;}
+.for-title{font-size:16px;font-weight:900;margin-bottom:10px;}
+.for-list{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.for-list li{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.for-list li::before{content:'→';color:var(--gold);font-weight:900;}
+/* TAQQOSLASH */
+.cmp-table{width:100%;border-collapse:collapse;margin-top:38px;}
+.cmp-table th{padding:13px 16px;text-align:left;font-size:11px;font-weight:800;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);}
+.cmp-table th.hl{color:var(--gold);}
+.cmp-table td{padding:12px 16px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.03);}
+.cmp-table tr:last-child td{border:none;}
+.cmp-table tr:hover td{background:rgba(255,255,255,.015);}
+.td-yes{color:#4ade80;font-weight:800;}
+.td-no{color:#f87171;opacity:.7;}
+.td-hl{color:var(--gold);font-weight:800;}
+.td-feat{font-weight:700;}
+/* CTA */
+.cta-box{background:linear-gradient(135deg,rgba(27,79,138,.2),rgba(46,125,50,.15));
+  border:1px solid rgba(232,184,75,.2);border-radius:22px;padding:60px 44px;text-align:center;position:relative;overflow:hidden;}
+.cta-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(232,184,75,.06),transparent 70%);}
+.cta-h{font-family:'Playfair Display',serif;font-size:clamp(24px,3.5vw,42px);margin-bottom:13px;position:relative;}
+.cta-p{font-size:15px;color:var(--muted);margin-bottom:32px;position:relative;}
+.cta-btns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;position:relative;}
+.cta-contacts{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin-top:32px;position:relative;}
+.cta-cnt{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--muted);}
+.cta-cnt a{color:#fff;text-decoration:none;font-weight:700;}
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:30px 5%;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.foot-logo{font-family:'Playfair Display',serif;font-size:17px;color:var(--muted);}
+.foot-logo b{color:var(--gold);}
+.foot-copy{font-size:11px;color:var(--muted);}
+.foot-links{display:flex;gap:16px;}
+.foot-links a{font-size:11px;color:var(--muted);text-decoration:none;}
+.foot-links a:hover{color:#fff;}
+.fi{opacity:0;transform:translateY(22px);transition:.6s ease;}
+.fi.vis{opacity:1;transform:translateY(0);}
+.fi-d1{transition-delay:.1s;}
+.fi-d2{transition-delay:.2s;}
+.fi-d3{transition-delay:.3s;}
+@media(max-width:960px){
+  .hero-inner,.adv-grid{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .stat-row{grid-template-columns:repeat(2,1fr);}
+  .sol-grid,.for-grid{grid-template-columns:1fr;}
+  .flow-row{flex-direction:column;align-items:flex-start;padding-left:20px;}
+  .flow-step{flex-direction:row;text-align:left;max-width:100%;gap:14px;padding:10px 0;}
+  .flow-num{margin-bottom:0;flex-shrink:0;}
+  .flow-arrow{display:none;}
+  nav .nav-links{display:none;}
+  .cta-box{padding:32px 18px;}
+}
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="grid-lines"></div>
+
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-box">N</div>
+    <span class="logo-text">Navbat<b>.uz</b></span>
+  </a>
+  <div class="nav-links">
+    <a href="#muammo">Muammo</a>
+    <a href="#yechim">Yechim</a>
+    <a href="#qanday">Qanday ishlaydi</a>
+    <a href="#kimuchun">Kim uchun</a>
+    <a href="#taqqoslash">Taqqoslash</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-lang">
+      <button class="act" onclick="setLang('uz')" id="lbUZ">UZ</button>
+      <button onclick="setLang('ru')" id="lbRU">RU</button>
+      <button onclick="setLang('en')" id="lbEN">EN</button>
+    </div>
+    <a href="#cta" class="nav-cta" id="navCta">🚀 Demo so'rash</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="fi">
+      <div class="hero-tag"><span class="pulse"></span><span id="heroTag">🇺🇿 O'zbekiston uchun yaratilgan</span></div>
+      <h1 id="heroH1">Navbatda kutish —<br><em>endi o'tmishda!</em></h1>
+      <p class="hero-sub" id="heroSub">Bank, poliklinika yoki davlat muassasasida mijozlaringiz soatlab navbat kutmoqda. <b>Navbat.uz</b> buni butunlay yo'q qiladi — uydan turib navbat, ariza, to'lov.</p>
+      <div class="btns">
+        <a href="navbat.html" target="_blank" class="btn-p" id="heroBtnMijoz">📱 Mijoz interfeysi</a>
+        <a href="admin.html" target="_blank" class="btn-s" id="heroBtnAdmin">⚙️ Admin panel</a>
+        <a href="#cta" class="btn-s" id="heroBtnDemo">🚀 Demo so'rash</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hst"><div class="hst-n">14</div><div class="hst-l" id="statViloyat">Viloyat</div></div>
+        <div class="hst"><div class="hst-n">173</div><div class="hst-l" id="statTuman">Tuman</div></div>
+        <div class="hst"><div class="hst-n">3</div><div class="hst-l" id="statTil">Til</div></div>
+        <div class="hst"><div class="hst-n">24/7</div><div class="hst-l" id="statIshlaydi">Ishlaydi</div></div>
+      </div>
+    </div>
+    <div class="hero-right fi fi-d2">
+      <div style="perspective:1200px;">
+        <div class="mockup">
+          <div class="mock-bar">
+            <div class="mock-dots"><span style="background:#ff5f56"></span><span style="background:#ffbd2e"></span><span style="background:#27c93f"></span></div>
+            <div class="mock-url">navbat.uz/admin</div>
+          </div>
+          <div class="mock-body">
+            <div class="mock-cards">
+              <div class="mc"><div class="mc-n">24</div><div class="mc-l">Bugun</div></div>
+              <div class="mc"><div class="mc-n">7</div><div class="mc-l">Kutmoqda</div></div>
+              <div class="mc"><div class="mc-n">94%</div><div class="mc-l">Keldi</div></div>
+            </div>
+            <div class="mock-rows">
+              <div class="mr"><div class="mr-av" style="background:rgba(27,79,138,.3)">🏦</div><div class="mr-name">Alisher Karimov</div><div class="mr-time">10:00</div><span class="badge bw">Kutmoqda</span></div>
+              <div class="mr"><div class="mr-av" style="background:rgba(46,125,50,.3)">🏥</div><div class="mr-name">Malika Yusupova</div><div class="mr-time">10:30</div><span class="badge bk">Keldi</span></div>
+              <div class="mr"><div class="mr-av" style="background:rgba(27,79,138,.3)">🏦</div><div class="mr-name">Bobur Hasanov</div><div class="mr-time">11:00</div><span class="badge bd">Bajarildi</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fc fc1"><div class="fc1-num">-87%</div><div class="fc1-lbl">Kutish vaqti kamaydi</div></div>
+      <div class="fc fc2"><div class="fc2-ico">🔔</div><div><div class="fc2-title">Yangi navbat!</div><div class="fc2-sub">B-52 · Kredit · 14:00</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MUAMMO -->
+<section id="muammo" style="background:rgba(255,255,255,.01);border-top:1px solid var(--border)">
+  <div class="container">
+    <div class="fi" style="text-align:center;max-width:600px;margin:0 auto">
+      <div class="stag stag-r">Muammo</div>
+      <h2 class="sec-h">O'zbekistonda navbat<br>qanday ko'rinadi?</h2>
+      <p class="sec-p" style="margin:0 auto">Raqamlarga qarang — bu bugun ham muassasalarda sodir bo'lmoqda.</p>
+    </div>
+    <div class="stat-row fi fi-d1">
+      <div class="stat-box"><div class="stat-num">1.5</div><div class="stat-lbl">soat — bitta tashrif uchun o'rtacha navbat kutish vaqti</div></div>
+      <div class="stat-box"><div class="stat-num">37M</div><div class="stat-lbl">aholi — har biri yiliga o'nlab marta muassasaga boradi</div></div>
+      <div class="stat-box"><div class="stat-num">30%</div><div class="stat-lbl">mijozlar zarur hujjatsiz bekor keladi va qaytib ketadi</div></div>
+      <div class="stat-box"><div class="stat-num">0</div><div class="stat-lbl">viloyatda xususiy muassasalar uchun tayyor onlayn navbat tizimi</div></div>
+    </div>
+    <div class="timeline fi">
+      <div class="tl-line"></div>
+      <div class="tl-item">
+        <div class="tl-dot">😤</div>
+        <div class="tl-body">
+          <div class="tl-title">Uzun navbat — vaqt va pul yo'qoladi</div>
+          <div class="tl-desc">Jizzax, Surxondaryo, Qashqadaryo kabi viloyatlarda fuqarolar karta yoki pasport uchun 2-4 soat, ba'zan butun ish kunini sarflaydi. Bu nafaqat vaqt, balki yo'l xarajatlari va ishlab topilmagan daromad ham. Mamlakatimiz miqyosida bu yiliga yuz millionlab ish soatiga teng.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">😕</div>
+        <div class="tl-body">
+          <div class="tl-title">Bekor kelish — ikki marta borish zaruriyati</div>
+          <div class="tl-desc">Mijoz keladi, ammo "hujjatingiz yetishmaydi" yoki "bugun bu mutaxassis yo'q" deb qaytarib yuboriladi. Natijada yana kelish kerak. Bunday holatlar fuqarolarda kuchli norozilik va muassasaga nisbatan ishonchsizlik uyg'otadi.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">🏢</div>
+        <div class="tl-body">
+          <div class="tl-title">Xususiy sektor chetda qolmoqda</div>
+          <div class="tl-desc">My.gov.uz faqat davlat muassasalari uchun ishlaydi. Xususiy banklar, klinikalar, salonlar — hech qanday onlayn navbat tizimisiz faoliyat yuritmoqda. Bu raqobat qobiliyatini pasaytiradi va mijoz qoniqishini kamaytiradi.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">🖥️</div>
+        <div class="tl-body">
+          <div class="tl-title">Apparat va onlayn — bir-biriga bog'liq emas</div>
+          <div class="tl-desc">Ko'pchilik muassasalarda jismoniy navbat apparatlari bor, lekin ular onlayn tizimlar bilan sinxronlashmagan. Yo'lda kelayotgan odam qancha raqam borligini bilmaydi. Apparat esa faqat joyida turganlar uchun ishlaydi.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- YECHIM -->
+<section id="yechim">
+  <div class="container">
+    <div class="fi">
+      <div class="stag stag-g">Yechim</div>
+      <h2 class="sec-h">Navbat.uz — barcha<br>muammolarga yagona javob</h2>
+      <p class="sec-p">Uydan navbat, ariza, to'lov. Muassasaga faqat <b>bir marta</b> — olish uchun.</p>
+    </div>
+    <div class="sol-grid fi fi-d1">
+      <div class="sol-card"><div class="sol-ico">📱</div><div class="sol-title">Uydan navbat olish</div><div class="sol-desc">Mijoz telefonidan xizmat va vaqtni tanlaydi. Keladi — 5 daqiqada xizmat oladi. Navbat kutish nolga tushadi.</div></div>
+      <div class="sol-card"><div class="sol-ico">📋</div><div class="sol-title">Onlayn ariza berish</div><div class="sol-desc">Bank kartasi, ID karta, xorijiy pasport — uydan turib to'liq ariza. Hujjatlarni oldindan tayyorlaydi, bekor kelish yo'qoladi.</div></div>
+      <div class="sol-card"><div class="sol-ico">💳</div><div class="sol-title">Onlayn to'lov</div><div class="sol-desc">Payme, Click, Uzum yoki karta orqali to'lov. Muassasaga faqat tayyor hujjatni olish uchun bir marta boradi.</div></div>
+      <div class="sol-card"><div class="sol-ico">🖥️</div><div class="sol-title">Apparat integratsiya</div><div class="sol-desc">Jismoniy apparat №66 chiqarsa — onlayn foydalanuvchi №67 oladi. Yo'lda kelayotgan odam navbatini oldindan biladi.</div></div>
+      <div class="sol-card"><div class="sol-ico">📊</div><div class="sol-title">Real-time boshqaruv</div><div class="sol-desc">Admin panelda bugungi navbatlar, statistika, arizalar holati — hammasi bir joyda. 5 soniyada avtomatik yangilanadi.</div></div>
+      <div class="sol-card"><div class="sol-ico">🌐</div><div class="sol-title">3 tilda ishlaydi</div><div class="sol-desc">O'zbek, Rus va Ingliz tillari — xorijiy fuqarolar, investorlar va rus tilida muloqot qiluvchilar ham bemalol foydalanadi.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- QANDAY ISHLAYDI -->
+<section id="qanday" style="background:rgba(255,255,255,.01);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="container">
+    <div class="fi" style="text-align:center">
+      <div class="stag stag-b">Jarayon</div>
+      <h2 class="sec-h">Qanday ishlaydi?</h2>
+      <p class="sec-p" style="margin:0 auto">Mijoz uchun ham, xodim uchun ham juda oddiy — 5 qadam.</p>
+    </div>
+    <div class="flow-row fi fi-d1">
+      <div class="flow-step"><div class="flow-num">1</div><div class="flow-icon">🏦</div><div class="flow-title">Xizmat tanlaydi</div><div class="flow-desc">Bank, klinika yoki davlat — kerakli xizmatni tanlaydi</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="flow-num">2</div><div class="flow-icon">📍</div><div class="flow-title">Muassasa topadi</div><div class="flow-desc">Xaritada yaqin filiallar ko'rinadi, tuman tanlanadi</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="flow-num">3</div><div class="flow-icon">🕐</div><div class="flow-title">Vaqt belgilaydi</div><div class="flow-desc">Bo'sh slotlar ichidan qulay soatni tanlaydi</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="flow-num">4</div><div class="flow-icon">💳</div><div class="flow-title">Ariza va to'lov</div><div class="flow-desc">Hujjat ariza va Payme/Click orqali to'lov qiladi</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="flow-num">5</div><div class="flow-icon">✅</div><div class="flow-title">Bir marta boradi</div><div class="flow-desc">Faqat tayyor hujjatni olish uchun keladi va ketadi</div></div>
+    </div>
+
+    <div class="adv-grid fi" style="margin-top:60px;">
+      <div class="adv-list">
+        <div class="adv-item"><div class="adv-ico">⚡</div><div><div class="adv-title">Vaqtni 87% tejaydi</div><div class="adv-desc">Navbat kutish 1.5 soatdan 5 daqiqaga tushadi. Har bir mijoz o'rtacha 1.5 soat vaqt tejaydi.</div></div></div>
+        <div class="adv-item"><div class="adv-ico">📋</div><div><div class="adv-title">Bekor kelish yo'qoladi</div><div class="adv-desc">Hujjat ro'yxati oldindan ko'rsatiladi. Ariza onlayn to'ldiriladi. Muassasaga tayyor holda keladi.</div></div></div>
+        <div class="adv-item"><div class="adv-ico">🔒</div><div><div class="adv-title">Xavfsizlik va identifikatsiya</div><div class="adv-desc">JSHSHIR 14 raqam tekshiruvi, O'zbek operator prefikslari validatsiyasi, faqat o'z nomingizga ariza berish.</div></div></div>
+        <div class="adv-item"><div class="adv-ico">🗺️</div><div><div class="adv-title">14 viloyat, 173 tuman</div><div class="adv-desc">Viloyat → Tuman → Muassasa kaskad tanlash. Butun O'zbekiston uchun — hech kim chetda qolmaydi.</div></div></div>
+      </div>
+      <div class="visual-panel fi fi-d2">
+        <div class="vp-header">
+          <div class="vp-title">🎫 Navbat chiptasi</div>
+          <div class="vp-live"><span class="vp-dot"></span> Real vaqt</div>
+        </div>
+        <div class="vp-body">
+          <div class="vp-ticket"><div class="vp-num">B-52</div><div class="vp-svc">Kredit olish xizmati</div></div>
+          <div class="vp-rows">
+            <div class="vpr"><span class="vpr-lbl">Muassasa</span><span class="vpr-val">Xalq banki — Jizzax</span></div>
+            <div class="vpr"><span class="vpr-lbl">Sana</span><span class="vpr-val">2026-04-21</span></div>
+            <div class="vpr"><span class="vpr-lbl">Vaqt</span><span class="vpr-val">10:30</span></div>
+            <div class="vpr"><span class="vpr-lbl">Mijoz</span><span class="vpr-val">D. Sherqulova</span></div>
+            <div class="vpr"><span class="vpr-lbl">To'lov</span><span class="vpr-val" style="color:#4ade80">✅ To'langan</span></div>
+          </div>
+          <div class="vp-wait"><div class="vp-wait-n">1 kishi</div><div class="vp-wait-l">Siz oldingizda · ~5 daqiqa</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KIM UCHUN -->
+<section id="kimuchun">
+  <div class="container">
+    <div class="fi" style="text-align:center">
+      <div class="stag stag-y">Auditoriya</div>
+      <h2 class="sec-h">Kim uchun mo'ljallangan?</h2>
+      <p class="sec-p" style="margin:0 auto">Har qanday muassasa uchun — sozlash 5 daqiqa, natija bir zumda.</p>
+    </div>
+    <div class="for-grid fi fi-d1">
+      <div class="for-card for-bank">
+        <div class="for-ico">🏦</div>
+        <div class="for-title">Banklar</div>
+        <ul class="for-list">
+          <li>Kredit va depozit xizmatlari</li>
+          <li>Karta rasmiylashtrish arizasi</li>
+          <li>Onlayn to'lov (Payme/Click)</li>
+          <li>Valyuta almashtirish navbati</li>
+          <li>Ipoteka maslahati yozilish</li>
+        </ul>
+      </div>
+      <div class="for-card for-clinic">
+        <div class="for-ico">🏥</div>
+        <div class="for-title">Klinikalar</div>
+        <ul class="for-list">
+          <li>Shifokor qabuliga yozilish</li>
+          <li>Laboratoriya tahlillari navbati</li>
+          <li>Stomatolog va ko'z shifokori</li>
+          <li>Emlash va profilaktika</li>
+          <li>Diagnostika va UZI yozilish</li>
+        </ul>
+      </div>
+      <div class="for-card for-gov">
+        <div class="for-ico">🏛️</div>
+        <div class="for-title">Davlat xizmatlari</div>
+        <ul class="for-list">
+          <li>IIV — Pasport va ID karta</li>
+          <li>FUXT — Notarius xizmatlari</li>
+          <li>Soliq inspeksiyasi murojaati</li>
+          <li>Pensiya fondi xizmatlari</li>
+          <li>Yer kadastri va ro'yxatga olish</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TAQQOSLASH -->
+<section id="taqqoslash" style="background:rgba(255,255,255,.01);border-top:1px solid var(--border)">
+  <div class="container">
+    <div class="fi">
+      <div class="stag stag-b">Taqqoslash</div>
+      <h2 class="sec-h">Mavjud tizimlar bilan<br>qiyoslash</h2>
+      <p class="sec-p">Nima uchun aynan Navbat.uz tanlanadi?</p>
+    </div>
+    <div style="overflow-x:auto" class="fi fi-d1">
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>Xususiyat</th>
+            <th>My.gov.uz</th>
+            <th>Qmatic / BSQ</th>
+            <th>Jismoniy apparat</th>
+            <th class="hl">✨ Navbat.uz</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="td-feat">Davlat muassasalari</td><td class="td-yes">✅</td><td class="td-yes">✅</td><td class="td-yes">✅</td><td class="td-hl">✅</td></tr>
+          <tr><td class="td-feat">Xususiy bank va klinika</td><td class="td-no">❌</td><td class="td-yes">✅</td><td class="td-no">❌</td><td class="td-hl">✅</td></tr>
+          <tr><td class="td-feat">O'zbek tili (to'liq)</td><td class="td-yes">✅</td><td class="td-no">❌</td><td class="td-no">❌</td><td class="td-hl">✅</td></tr>
+          <tr><td class="td-feat">Onlayn ariza (karta/pasport)</td><td style="color:var(--muted);font-size:12px">Cheklangan</td><td class="td-no">❌</td><td class="td-no">❌</td><td class="td-hl">✅</td></tr>
+          <tr><td class="td-feat">Payme / Click to'lov</td><td class="td-yes">✅</td><td class="td-no">❌</td><td class="td-no">❌</td><td class="td-hl">✅</td></tr>
+          <tr><td class="td-feat">Jismoniy apparat integratsiya</td><td class="td-no">❌</td><td class="td-yes">✅</td><td style="color:var(--muted);font-size:12px">Faqat joyida</td><td class="td-hl">✅</td></tr>
+          <tr><td class="td-feat">14 viloyat, 173 tuman</td><td class="td-yes">✅</td><td class="td-no">❌</td><td class="td-no">❌</td><td class="td-hl">✅</td></tr>
+          <tr><td class="td-feat">O'rnatish muddati</td><td style="color:var(--muted);font-size:12px">Davlat organlari uchun</td><td style="color:var(--muted);font-size:12px">Oylar + katta narx</td><td style="color:var(--muted);font-size:12px">Uskuna keltirish kerak</td><td class="td-hl">5 daqiqada</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="container">
+    <div class="cta-box fi">
+      <h2 class="cta-h" id="ctaH2">Bugun boshlang —<br><span style="color:var(--gold)">birinchi oy bepul!</span></h2>
+      <p class="cta-p" id="ctaP">Demo so'rang, tizimni sinab ko'ring. Yoqsa — to'lang. Yoqmasa — hech narsa yo'q.</p>
+      <div class="cta-btns">
+        <a href="navbat.html" target="_blank" class="btn-p" style="font-size:15px;padding:14px 30px" id="ctaBtnMijoz">📱 Mijoz interfeysi</a>
+        <a href="admin.html" target="_blank" class="btn-s" style="font-size:15px;padding:14px 30px;border-color:rgba(232,184,75,.35);color:var(--gold)" id="ctaBtnAdmin">⚙️ Admin panel</a>
+        <a href="tel:+998945724163" class="btn-s" style="font-size:15px;padding:14px 30px" id="ctaBtnCall">📞 Qo'ng'iroq</a>
+      </div>
+      <div class="cta-contacts">
+        <div class="cta-cnt">📞 <a href="tel:+998945724163">+998 94 572 41 63</a></div>
+        <div class="cta-cnt">📱 <a href="#">Telegram: @navbat_uz</a></div>
+        <div class="cta-cnt">✉️ <a href="mailto:info@navbat.uz">info@navbat.uz</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-logo">Navbat<b>.uz</b></div>
+  <div class="foot-copy" id="footCopy">© 2026 Navbat.uz — Barcha huquqlar himoyalangan</div>
+  <div class="foot-links">
+    <a href="navbat.html">Mijozlar uchun</a>
+    <a href="admin.html">Admin panel</a>
+  </div>
+</footer>
+
+<script>
+const LT={
+  uz:{
+    heroTag:"🇺🇿 O'zbekiston uchun yaratilgan",
+    heroH1:"Navbatda kutish —<br><em>endi o'tmishda!</em>",
+    heroSub:"Bank, poliklinika yoki davlat muassasasida mijozlaringiz soatlab navbat kutmoqda. <b>Navbat.uz</b> buni butunlay yo'q qiladi — uydan turib navbat, ariza, to'lov.",
+    heroBtnMijoz:"📱 Mijoz interfeysi",heroBtnAdmin:"⚙️ Admin panel",heroBtnDemo:"🚀 Demo so'rash",
+    statViloyat:"Viloyat",statTuman:"Tuman",statTil:"Til",statIshlaydi:"Ishlaydi",
+    navCta:"🚀 Demo so'rash",
+    ctaH2:"Bugun boshlang —<br><span style='color:var(--gold)'>birinchi oy bepul!</span>",
+    ctaP:"Demo so'rang, tizimni sinab ko'ring. Yoqsa — to'lang. Yoqmasa — hech narsa yo'q.",
+    ctaBtnMijoz:"📱 Mijoz interfeysi",ctaBtnAdmin:"⚙️ Admin panel",ctaBtnCall:"📞 Qo'ng'iroq",
+    footCopy:"© 2026 Navbat.uz — Barcha huquqlar himoyalangan",
+  },
+  ru:{
+    heroTag:"🇷🇺 Создано для Узбекистана",
+    heroH1:"Очередь —<br><em>уходит в прошлое!</em>",
+    heroSub:"В банках, клиниках и госучреждениях клиенты часами стоят в очередях. <b>Navbat.uz</b> устраняет это полностью — запись, заявка и оплата из дома.",
+    heroBtnMijoz:"📱 Интерфейс клиента",heroBtnAdmin:"⚙️ Администратор",heroBtnDemo:"🚀 Запросить демо",
+    statViloyat:"Регионов",statTuman:"Районов",statTil:"Языка",statIshlaydi:"Работает",
+    navCta:"🚀 Демо",
+    ctaH2:"Начните сегодня —<br><span style='color:var(--gold)'>первый месяц бесплатно!</span>",
+    ctaP:"Запросите демо, протестируйте систему. Понравится — платите. Нет — без обязательств.",
+    ctaBtnMijoz:"📱 Интерфейс клиента",ctaBtnAdmin:"⚙️ Администратор",ctaBtnCall:"📞 Позвонить",
+    footCopy:"© 2026 Navbat.uz — Все права защищены",
+  },
+  en:{
+    heroTag:"🌐 Built for Uzbekistan",
+    heroH1:"Waiting in line —<br><em>is now history!</em>",
+    heroSub:"In banks, clinics and government offices, clients wait for hours. <b>Navbat.uz</b> eliminates this completely — book, apply and pay from home.",
+    heroBtnMijoz:"📱 Client Interface",heroBtnAdmin:"⚙️ Admin Panel",heroBtnDemo:"🚀 Get Demo",
+    statViloyat:"Regions",statTuman:"Districts",statTil:"Languages",statIshlaydi:"Available",
+    navCta:"🚀 Get Demo",
+    ctaH2:"Start today —<br><span style='color:var(--gold)'>first month free!</span>",
+    ctaP:"Request a demo, test the system. Like it — pay. Don't like it — no obligations.",
+    ctaBtnMijoz:"📱 Client Interface",ctaBtnAdmin:"⚙️ Admin Panel",ctaBtnCall:"📞 Call Us",
+    footCopy:"© 2026 Navbat.uz — All rights reserved",
+  }
+};
+let currentLang=localStorage.getItem('navbat_lang')||'uz';
+function setLang(lang){currentLang=lang;localStorage.setItem('navbat_lang',lang);applyLang();}
+function applyLang(){
+  const T=LT[currentLang]||LT.uz;
+  Object.keys(T).forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=T[id];});
+  ['UZ','RU','EN'].forEach(l=>{
+    const btn=document.getElementById('lb'+l);if(!btn)return;
+    btn.className=l.toLowerCase()===currentLang?'act':'';
+  });
+  document.documentElement.lang=currentLang;
+}
+const obs=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('vis');});},{threshold:.08});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+applyLang();
+</script>
+</body>
+</html>
